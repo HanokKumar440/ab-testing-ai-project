@@ -28,3 +28,24 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
 print("Accuracy:", accuracy_score(y_test, y_pred))
+
+probs = model.predict_proba(X)[:, 1]
+df["conversion_prob"] = probs
+
+df["ai_group"] = df["conversion_prob"].apply(lambda x: "B" if x > 0.5 else "A")
+
+import numpy as np
+
+df["random_group"] = np.random.choice(["A", "B"], len(df))
+
+ai_df = df[df["ai_group"] == "B"]
+ai_performance = ai_df["converted"].mean()
+
+
+random_df = df[df["random_group"] == "B"]
+random_performance = random_df["converted"].mean()
+
+print("AI Performance:", ai_performance)
+print("Random Performance:", random_performance)
+
+
